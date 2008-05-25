@@ -1,6 +1,4 @@
 require "erb"
-require "rubygems"
-require "ruby-debug"
 
 module RiOutputter
   class HtmlFormatter
