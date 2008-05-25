@@ -57,9 +57,7 @@ module RiOutputter
       string
     end
     
-    def e(string)
-      string
-    end
+    def e(text); text.gsub(/&/, '&amp;').gsub(/</, '&lt;').gsub(/>/, '&gt;') end
   
   end
 end
