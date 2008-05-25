@@ -76,8 +76,8 @@ module RiOutputter
       ERB.new(@multiple_matches_template, 0, "%-<>").result(binding)
     end
     
-    def link(string)
-      string
+    def link(text)
+      e text
     end
     
     def e(text); text.gsub(/&/, '&amp;').gsub(/</, '&lt;').gsub(/>/, '&gt;') end
