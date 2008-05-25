@@ -4,46 +4,47 @@ describe RiOutputter::Lookup do
   before(:all) do
     @ri = RiOutputter::Lookup.new
   end
-    
-  # ==========
-  # = Method =
-  # ==========
-  describe "#html_for('Array#sort')" do
-    it "should output some nice HTML" do
+
+  describe "#html_for" do
+    # ==========
+    # = Method =
+    # ==========
+    it "should output some nice HTML for 'Array#sort'" do
       result = @ri.html_for("Array#sort")
       result.should include('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"')
     end
-  end
-  
-  # =========
-  # = Class =
-  # =========
-  describe "#html_for('String')" do
-    it "should output some nice HTML" do
+
+    # =========
+    # = Class =
+    # =========
+    it "should output some nice HTML for 'String'" do
       result = @ri.html_for("String")
       result.should include('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"')
     end
-  end
 
-  # =====================
-  # = Incomplete method =
-  # =====================
-  describe "#html_for('sor')" do
-    it "should output some nice HTML" do
+    # =====================
+    # = Incomplete method =
+    # =====================
+    it "should output some nice HTML for 'sor'" do
+      result = @ri.html_for("sor")
+      result.should include('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"')
+    end
+
+    # =====================
+    # = Incomplete class  =
+    # =====================
+    it "should output some nice HTML for 'Str'" do
       result = @ri.html_for("Str")
       result.should include('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"')
     end
-  end
 
-  # =====================
-  # = Incomplete method =
-  # =====================
-  describe "#html_for('Str')" do
-    it "should output some nice HTML" do
-      result = @ri.html_for("Str")
-      result.should include('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"')
+    # ==============
+    # = Exceptions =
+    # ==============
+    it "should raise RiError if given bad input" do
+      lambda { @ri.html_for("foobarbaz") }.should raise_error(RiError)
     end
   end
 
-  
+
 end
