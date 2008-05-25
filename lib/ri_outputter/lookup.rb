@@ -25,9 +25,9 @@ module RiOutputter
         @formatter.markup_for_class(result)
       when Array
         case result.first
-        when ClassEntry
+        when RI::ClassEntry
           @formatter.markup_for_class_entries(result)
-        when MethodEntry
+        when RI::MethodEntry
           @formatter.markup_for_method_entries(result)
         end
       end

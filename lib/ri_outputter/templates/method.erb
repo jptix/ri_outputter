@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title><%= e method_name %></title>
+</head>
+<body>
+
+<h1><%= e method_name %></h1>
+
+<h2>Parameters</h2>
+<%= e method_parameters %>
+
+<h2>Description</h2>
+<%= method_description %>
+
+<pre>
+<%= method_example %>
+</pre>
+
+<h2>Aliases</h2>
+<ul>
+    <%- method_aliases.each do |ali| -%>
+    <li>
+		<%= e ali.name %>
+    </li>
+    <%- end -%>
+</ul>
+
+</body>
+</html>
+
