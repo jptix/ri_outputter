@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title><%= e class_name %></title>
+</head>
+<body>
+
+<h1><%= e class_name %></h1>
+
+<h2>Description</h2>
+<%= class_description %>
+
+<h2>Includes</h2>
+<ul>
+    <%- class_includes.each do |mod| -%>
+    <li><em><%= e mod.name %></em>
+        <ul>
+            <%- mod.methods.each do |method| -%>
+            <li><%= e method.name %></li>
+            <%- end -%>
+        </ul>
+    </li>
+    <%- end -%>
+</ul>
+
+<h2>Constants</h2>
+<dl>
+    <%- class_constants.each do |constant| -%>
+    <dt><%= e constant.name %></dt>
+    <dd><%= e constant.value %></dd>
+    <%- end -%>
+</dl>
+
+<h2>Class Methods</h2>
+<ul>
+    <%- class_methods.each do |method| -%>
+    <li><%= link method.name %></li>
+    <%- end -%>
+</ul>
+
+<h2>Instance Methods</h2>
+<ul>
+    <%- class_instance_methods.each do |method| -%>
+    <li><%= link method.name %></li>
+    <%- end -%>
+</ul>
+
+</body>
+</html>

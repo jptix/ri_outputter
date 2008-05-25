@@ -3,10 +3,8 @@ require "pp"
 
 module RiOutputter
   class Lookup < RiDriver
-    alias_method :find, :get_info_for
-  
     def initialize(formatter = HtmlFormatter)
-      @formatter = formatter.new
+      @formatter = formatter.new(self)
 
       # ri command line options goes here, if we need them
       args = []
@@ -17,21 +15,38 @@ module RiOutputter
     
       @display = self
     end
+    
+    def find(query)
+      result = get_info_for(query)
+      case result
+      when RI::MethodDescription
+        @formatter.markup_for_method(result)
+      when RI::ClassDescription
+        @formatter.markup_for_class(result)
+      when Array
+        case result.first
+        when ClassEntry
+          @formatter.markup_for_class_entries(result)
+        when MethodEntry
+          @formatter.markup_for_method_entries(result)
+        end
+      end
+    end
   
     def display_method_info(method)
-      @formatter.markup_for_method(method)
+      method
     end
   
     def display_class_info(klass, ri_reader)
-      @formatter.markup_for_class(klass)
+      klass
     end
   
-    def display_method_list(methods)
-      @formatter.markup_for_method_list(methods)
+    def display_method_list(method_entries)
+      method_entries
     end
   
-    def display_class_list(namespaces)
-      @foramtter.markup_for_class_list(namespaces)
+    def display_class_list(class_entries)
+      class_entries
     end
   
     # not sure when these are called
