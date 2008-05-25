@@ -21,10 +21,10 @@ module RiOutputter
     
       @display = self
     end
-    
+
     # Returns HTML output for the given query.
-    # If you need the data objects themselves, use Lookup#get_info_for(query)
-    def find(query)
+    # If you need the data objects themselves, use Lookup#struct_for(query)
+    def html_for(query)
       result = get_info_for(query)
       case result
       when RI::MethodDescription
@@ -39,6 +39,11 @@ module RiOutputter
           @formatter.markup_for_method_entries(result)
         end
       end
+    end
+    
+    # Return the resulting Ruby struct for this query
+    def struct_for(query)
+      get_info_for(query)
     end
   
     def display_method_info(method)

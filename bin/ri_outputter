@@ -5,4 +5,4 @@ require(File.dirname(__FILE__) + "/../lib/ri_outputter")
 abort("No argument given.") unless ARGV[0]
 
 ri = RiOutputter::Lookup.new
-print ri.find(ARGV[0])
+print ri.html_for(ARGV[0])
