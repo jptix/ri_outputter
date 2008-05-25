@@ -7,6 +7,7 @@ module RiOutputter
   
     def initialize(formatter = HtmlFormatter)
       @formatter = formatter.new
+
       # ri command line options goes here, if we need them
       args = []
       original_args = ARGV.dup

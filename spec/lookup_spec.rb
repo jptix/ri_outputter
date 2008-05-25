@@ -12,7 +12,7 @@ describe RiOutputter::Lookup do
     it "should output some nice HTML" do
       result = @ri.find("Array#sort")
       result.should include('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"')
-      puts result
+      # puts result
     end
   end
 

@@ -37,7 +37,7 @@ module RiOutputter
 
     # Argument:
     #
-    # class_entries - array of MethodEntry objects
+    # class_entries - array of ClassEntry objects
     def markup_for_class_list(class_entries)
       out = ''
       out << header
