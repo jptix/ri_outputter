@@ -17,17 +17,20 @@ module RiOutputter
       
       method_name        = method.full_name
       method_parameters  = method.params
-      method_example     = method.comment.select { |c| SM::Flow::VERB === c }
-      method_description = (method.comment - method_example)
+      if method.comment
+        method_example     = method.comment.select { |c| SM::Flow::VERB === c }
+        method_description = (method.comment - method_example)
 
-      method_description = method_description.map do |c|
-        c.respond_to?(:body) ? c.body.gsub(/(\A|\n)\s+/, '\1  ') : ''
-      end.join("\n")
+        method_description = method_description.map do |c|
+          c.respond_to?(:body) ? c.body.gsub(/(\A|\n)\s+/, '\1  ') : ''
+        end.join("\n")
       
-      method_example = method_example.map do |c|
-        c.respond_to?(:body) ? c.body.gsub(/(\A|\n)\s+/, '\1  ') : ''
-      end.join("\n")
-
+        method_example = method_example.map do |c|
+          c.respond_to?(:body) ? c.body.gsub(/(\A|\n)\s+/, '\1  ') : ''
+        end.join("\n")
+      else
+        method_comment = method_example = ''
+      end
       
       method_aliases = method.aliases
       ERB.new(@method_template, 0, "%-<>").result(binding)
@@ -39,8 +42,12 @@ module RiOutputter
     def markup_for_class(klass)
       @class_template ||= File.read(File.dirname(__FILE__) + "/templates/class.erb")
       
-      class_name        = klass.full_name
-      class_description = klass.comment.map { |c| c.respond_to?(:body) ? c.body : '' }.join("\n").strip
+      class_name = klass.full_name
+      if klass.comment
+        class_description = klass.comment.map { |c| c.respond_to?(:body) ? c.body : '' }.join("\n").strip
+      else
+        class_description = ''
+      end
       
       class_includes = klass.includes.map do |mixin|
         name           = mixin.name
