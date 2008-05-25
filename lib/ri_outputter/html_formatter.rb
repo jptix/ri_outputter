@@ -16,6 +16,9 @@ module RiOutputter
       @template_paths.values.each do |path|
         raise Errno::ENOENT, path unless File.exist?(path)
       end
+      
+      stylesheet = File.join(template_folder, 'stylesheet.css')
+      @stylesheet = stylesheet if File.exist?(stylesheet)
     end
   
     # Argument:
