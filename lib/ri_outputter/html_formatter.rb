@@ -7,13 +7,22 @@ module RiOutputter
 
     def initialize(ri)
       @ri = ri
+      template_folder = @ri.template_folder || File.dirname(__FILE__) + "/templates/textmate"
+      @template_paths = {
+        :method           => File.join(template_folder, "method.erb"),
+        :class            => File.join(template_folder, "class.erb"),
+        :multiple_matches => File.join(template_folder, "multiple_matches.erb")
+      }
+      @template_paths.values.each do |path|
+        raise Errno::ENOENT, path unless File.exist?(path)
+      end
     end
   
     # Argument:
     #
     # method - RI::MethodDescription
     def markup_for_method(method)
-      @method_template ||= File.read(File.dirname(__FILE__) + "/templates/method.erb")
+      @method_template ||= File.read @template_paths[:method]
       
       method_name        = method.full_name
       method_parameters  = method.params
@@ -22,11 +31,11 @@ module RiOutputter
         method_description = (method.comment - method_example)
 
         method_description = method_description.map do |c|
-          c.respond_to?(:body) ? c.body.gsub(/(\A|\n)\s+/, '\1  ') : ''
+          c.respond_to?(:body) ? c.body.gsub(/^  .*\n(^  .*\n|^$\n(?=  |$))*/, '<pre>\0</pre>') : ''
         end.join("\n")
       
         method_example = method_example.map do |c|
-          c.respond_to?(:body) ? c.body.gsub(/(\A|\n)\s+/, '\1  ') : ''
+          c.respond_to?(:body) ? c.body.gsub(/^  .*\n(^  .*\n|^$\n(?=  |$))*/, '<pre>\0</pre>') : ''
         end.join("\n")
       else
         method_comment = method_example = ''
@@ -40,20 +49,30 @@ module RiOutputter
     #
     # klass - RI::ClassDescription
     def markup_for_class(klass)
-      @class_template ||= File.read(File.dirname(__FILE__) + "/templates/class.erb")
+      @class_template ||= File.read @template_paths[:class]
       
       class_name = klass.full_name
       if klass.comment
-        class_description = klass.comment.map { |c| c.respond_to?(:body) ? c.body : '' }.join("\n").strip
+        class_description = klass.comment.map do |c|
+          if c.respond_to?(:body) 
+            c.body.gsub(/^  .*\n(^  .*\n|^$\n(?=  |$))*/, '<pre>\0</pre>')
+          else
+            ''
+          end
+        end.join("\n").strip
       else
         class_description = ''
       end
       
-      class_includes = klass.includes.map do |mixin|
-        name           = mixin.name
-        included_class = @ri.get_info_for(name)
-        methods        = included_class ? included_class.instance_methods : []
-        Mixin.new(name, methods)
+      if klass.includes
+        class_includes = klass.includes.map do |mixin|
+          name           = mixin.name
+          included_class = @ri.get_info_for(name)
+          methods        = included_class ? included_class.instance_methods : []
+          Mixin.new(name, methods)
+        end
+      else
+        class_includes = []
       end
       
       class_constants        = klass.constants
@@ -67,7 +86,7 @@ module RiOutputter
     #
     # methods - array of MethodEntry objects
     def markup_for_method_entries(method_entries)
-      @multiple_matches_template ||= File.read(File.dirname(__FILE__) + "/templates/multiple_matches.erb")
+      @multiple_matches_template ||= File.read @template_paths[:multiple_matches] 
       objects = method_entries
       ERB.new(@multiple_matches_template, 0, "%-<>").result(binding)
     end
@@ -76,7 +95,7 @@ module RiOutputter
     #
     # class_entries - array of ClassEntry objects
     def markup_for_class_entries(class_entries)
-      @multiple_matches_template ||= File.read(File.dirname(__FILE__) + "/templates/multiple_matches.erb")
+      @multiple_matches_template ||= File.read @template_paths[:multiple_matches] 
       objects = class_entries
       ERB.new(@multiple_matches_template, 0, "%-<>").result(binding)
     end
@@ -86,6 +105,6 @@ module RiOutputter
     end
     
     def e(text); text.gsub(/&/, '&amp;').gsub(/</, '&lt;').gsub(/>/, '&gt;') end
-  
+    
   end
 end

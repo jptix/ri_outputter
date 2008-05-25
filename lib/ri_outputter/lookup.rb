@@ -3,11 +3,17 @@ require "pp"
 
 module RiOutputter
   class Lookup < RiDriver
-    def initialize(formatter = HtmlFormatter)
-      @formatter = formatter.new(self)
+    
+    # Used to do perform ri queries.
+    # Options:
+    #
+    #  * :template_folder => a folder that contains class.erb, method.erb and multiple_matches.erb
+    #  * :formatter       => a formatter class 
+    def initialize(options = {})
+      @template_folder = options[:template_folder]
+      @formatter       = (options[:formatter] || HtmlFormatter).new(self)
 
-      # ri command line options goes here, if we need them
-      args = []
+      args = %w() # ri command line options goes here, if we need them
       original_args = ARGV.dup
       ARGV.replace(args)
       super()
@@ -16,6 +22,8 @@ module RiOutputter
       @display = self
     end
     
+    # Returns HTML output for the given query.
+    # If you need the data objects themselves, use Lookup#get_info_for(query)
     def find(query)
       result = get_info_for(query)
       case result
