@@ -3,7 +3,7 @@ require "pp"
 
 module RiOutputter
   class Lookup < RiDriver
-    
+    attr_reader :template_folder
     # Used to do perform ri queries.
     # Options:
     #
