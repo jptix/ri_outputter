@@ -19,15 +19,16 @@
 	<pre><%= method_example %></pre>
 </p>
 
-<h2>Aliases</h2>
-<ul>
-    <%- method_aliases.each do |ali| -%>
-    <li>
-		<%= e ali.name %>
-    </li>
-    <%- end -%>
-</ul>
-
+<%- unless method_aliases.empty? -%>
+	<h2>Aliases</h2>
+	<ul>
+	    <%- method_aliases.each do |ali| -%>
+	    <li>
+			<%= e ali.name %>
+	    </li>
+	    <%- end -%>
+	</ul>
+<%- end -%>
 </body>
 </html>
 

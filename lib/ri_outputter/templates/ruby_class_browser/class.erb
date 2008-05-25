@@ -16,14 +16,18 @@
 <ul>
     <%- class_includes.each do |mod| -%>
     <li><em><%= e mod.name %></em>
-        <ul>
-            <%- mod.methods.each do |method| -%>
-            <li><%= e method.name %></li>
-            <%- end -%>
-        </ul>
+		<p>
+			<%= mod.methods.map { |c| c.name}.join(', ') %>
+		</p>
     </li>
     <%- end -%>
 </ul>
+
+<h2>Instance Methods</h2>
+<p><%= class_instance_methods.map { |c| c.name}.join(', ') %></p>
+
+<h2>Class Methods</h2>
+<p><%= class_methods.map { |c| c.name}.join(', ') %></p>
 
 <h2>Constants</h2>
 <dl>
@@ -32,20 +36,6 @@
     <dd><%= e constant.value %></dd>
     <%- end -%>
 </dl>
-
-<h2>Class Methods</h2>
-<ul>
-    <%- class_methods.each do |method| -%>
-    <li><%= link method.name %></li>
-    <%- end -%>
-</ul>
-
-<h2>Instance Methods</h2>
-<ul>
-    <%- class_instance_methods.each do |method| -%>
-    <li><%= link method.name %></li>
-    <%- end -%>
-</ul>
 
 </body>
 </html>
