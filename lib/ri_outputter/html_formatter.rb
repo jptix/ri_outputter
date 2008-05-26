@@ -142,7 +142,7 @@ module RiOutputter
       #   end
       # end
       # "<pre>#{params.join("\n")}</pre>"
-      "<pre>#{params}</pre>"
+      "<pre>#{text}</pre>"
     end
     
     def link(text)
