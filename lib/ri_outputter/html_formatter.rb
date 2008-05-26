@@ -105,6 +105,7 @@ module RiOutputter
     end
     
     def flow_list_to_html(list)
+      out = []
       out << "<dl>"
       flow.contents.each do |li|
         case li
