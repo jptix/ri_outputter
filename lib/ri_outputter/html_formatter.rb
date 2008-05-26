@@ -107,7 +107,7 @@ module RiOutputter
     def flow_list_to_html(list)
       out = []
       out << "<dl>"
-      flow.contents.each do |li|
+      list.contents.each do |li|
         case li
         when SM::Flow::LI
           out << <<-HTML
@@ -115,7 +115,7 @@ module RiOutputter
             <dd>#{ e li.body  }</dd>
           HTML
         when SM::Flow::LIST
-          out << flow_list_to_html(list)
+          out << flow_list_to_html(li)
         else
           raise "Unknown element #{flow.inspect}"
         end
