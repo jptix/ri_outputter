@@ -1,4 +1,7 @@
 require "erb"
+require 'rdoc/markup/simple_markup'
+require 'rdoc/markup/simple_markup/to_html'
+
 
 module RiOutputter
   class HtmlFormatter
@@ -19,6 +22,9 @@ module RiOutputter
       
       stylesheet = File.join(template_folder, 'stylesheet.css')
       @stylesheet = stylesheet if File.exist?(stylesheet)
+
+      @sm = SM::SimpleMarkup.new
+      @to_html = SM::ToHtml.new
     end
   
     # Argument:
@@ -82,20 +88,22 @@ module RiOutputter
     
     private
     
-    def flow_to_html(flows)
+    def flow_to_html(flows)      
       out = []
       flows.each do |flow|
         case flow
         when SM::Flow::P
           out << "<p>#{flow.body}</p>"
+          # out << @sm.convert(flow.body, @to_html)
         when SM::Flow::VERB
           out << "<pre>#{flow.body}</pre>"
+          # out << @sm.convert(flow.body, @to_html)
         when SM::Flow::RULE
           out << '<hr>'
         when SM::Flow::LIST
           out << flow_list_to_html(flow)
         when SM::Flow::H
-          out << "<h#{flow.level}></h#{flow.level}>"
+          out << "<h#{flow.level}>#{flow.text}</h#{flow.level}>"
         else 
           raise "Unknown element #{flow.inspect}"
         end
@@ -111,8 +119,8 @@ module RiOutputter
         case li
         when SM::Flow::LI
           out << <<-HTML
-            <dt>#{ e li.label }</dt>
-            <dd>#{ e li.body  }</dd>
+            <dt>#{ li.label }</dt>
+            <dd>#{ li.body  }</dd>
           HTML
         when SM::Flow::LIST
           out << flow_list_to_html(li)
@@ -124,7 +132,7 @@ module RiOutputter
     end
     
     def method_params_to_html(text, method_name)
-      params = text.split("\n")
+      # params = text.split("\n")
       # params.map! do |param|
       #   p param
       #   if param =~ /^  .*\n/ #(^  .*\n|^$\n(?=  |$))*/
@@ -133,11 +141,16 @@ module RiOutputter
       #     "  #{method_name}.#{param}"
       #   end
       # end
-      "<pre>#{params.join("\n")}</pre>"
+      # "<pre>#{params.join("\n")}</pre>"
+      "<pre>#{params}</pre>"
     end
     
     def link(text)
       e text
+    end
+    
+    def sm_to_html(text)
+      @sm.convert(text, @to_html)
     end
     
     def e(text); text.gsub(/&/, '&amp;').gsub(/</, '&lt;').gsub(/>/, '&gt;') end
