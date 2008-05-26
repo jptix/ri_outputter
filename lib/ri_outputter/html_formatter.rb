@@ -28,7 +28,7 @@ module RiOutputter
       @method_template ||= File.read @template_paths[:method]
       
       method_name        = method.full_name
-      method_parameters  = method.params
+      method_parameters  = method_params_to_html(method.params, method.name)
       method_description = method.comment ? flow_to_html(method.comment) : ''
       
       method_aliases = method.aliases
@@ -93,14 +93,7 @@ module RiOutputter
         when SM::Flow::RULE
           out << '<hr>'
         when SM::Flow::LIST
-          out << "<dl>"
-          flow.contents.each do |li|
-            out << <<-HTML
-            <dt>#{ e li.label }</dt>
-            <dd>#{ e li.body  }</dd>
-            HTML
-          end
-          out << "</dl>"
+          out << flow_list_to_html(flow)
         when SM::Flow::H
           out << "<h#{flow.level}></h#{flow.level}>"
         else 
@@ -109,6 +102,37 @@ module RiOutputter
       end
 
       out.join("\n")
+    end
+    
+    def flow_list_to_html(list)
+      out << "<dl>"
+      flow.contents.each do |li|
+        case li
+        when SM::Flow::LI
+          out << <<-HTML
+            <dt>#{ e li.label }</dt>
+            <dd>#{ e li.body  }</dd>
+          HTML
+        when SM::Flow::LIST
+          out << flow_list_to_html(list)
+        else
+          raise "Unknown element #{flow.inspect}"
+        end
+      end
+      out << "</dl>"
+    end
+    
+    def method_params_to_html(text, method_name)
+      params = text.split("\n")
+      # params.map! do |param|
+      #   p param
+      #   if param =~ /^  .*\n/ #(^  .*\n|^$\n(?=  |$))*/
+      #     param
+      #   else
+      #     "  #{method_name}.#{param}"
+      #   end
+      # end
+      "<pre>#{params.join("\n")}</pre>"
     end
     
     def link(text)
