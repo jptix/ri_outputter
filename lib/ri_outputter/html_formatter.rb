@@ -117,7 +117,7 @@ module RiOutputter
         when SM::Flow::LIST
           out << flow_list_to_html(li)
         else
-          raise "Unknown element #{flow.inspect}"
+          out << flow_to_html([li]).chomp
         end
       end
       out << "</dl>"

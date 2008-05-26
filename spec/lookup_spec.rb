@@ -21,6 +21,28 @@ describe RiOutputter::Lookup do
       result = @ri.html_for("String")
       result.should include('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"')
     end
+    it "should output some nice HTML for 'Array'" do
+      result = @ri.html_for("Array")
+      result.should include('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"')
+    end
+    it "should output some nice HTML for 'Binding'" do
+      result = @ri.html_for("Binding")
+      result.should include('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"')
+    end
+    it "should output some nice HTML for 'CGI'" do
+      result = @ri.html_for("CGI")
+      result.should include('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"')
+    end
+    it "should output some nice HTML for 'Exception'" do
+      result = @ri.html_for("Exception")
+      result.should include('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"')
+    end
+    it "should output some nice HTML for 'RDoc'" do
+      result = @ri.html_for("RDoc")
+      result.should include('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"')
+    end
+
+
 
     # =====================
     # = Incomplete method =
