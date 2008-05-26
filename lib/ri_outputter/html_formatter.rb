@@ -82,14 +82,33 @@ module RiOutputter
     
     private
     
-    def flow_to_html(comments)
-      comments.map do |c|
-        if c.respond_to?(:body) 
-          c.body.gsub(/^  .*\n(^  .*\n|^$\n(?=  |$))*/, '<pre>\0</pre>')
-        else
-          ''
+    def flow_to_html(flows)
+      out = []
+      flows.each do |flow|
+        case flow
+        when SM::Flow::P
+          out << "<p>#{flow.body}</p>"
+        when SM::Flow::VERB
+          out << "<pre>#{flow.body}</pre>"
+        when SM::Flow::RULE
+          out << '<hr>'
+        when SM::Flow::LIST
+          out << "<dl>"
+          flow.contents.each do |li|
+            out << <<-HTML
+            <dt>#{ e li.label }</dt>
+            <dd>#{ e li.body  }</dd>
+            HTML
+          end
+          out << "</dl>"
+        when SM::Flow::H
+          out << "<h#{flow.level}></h#{flow.level}>"
+        else 
+          raise "Unknown element #{flow.inspect}"
         end
-      end.join("\n").strip
+      end
+
+      out.join("\n")
     end
     
     def link(text)

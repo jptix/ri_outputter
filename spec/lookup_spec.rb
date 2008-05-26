@@ -41,8 +41,8 @@ describe RiOutputter::Lookup do
     # ==============
     # = Exceptions =
     # ==============
-    it "should raise RiError if given bad input" do
-      lambda { @ri.html_for("foobarbaz") }.should raise_error(RiError)
+    it "should return nil when it doesn't find a match" do
+      @ri.html_for("foobarbaz").should be_nil
     end
   end
 

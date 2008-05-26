@@ -15,8 +15,7 @@ module RiOutputter
     end
 
     def lookup(query)
-      raise RiError, "Nothing found for #{query}" unless res = info(query)
-      res
+      res = info(query)
     end
     
     def info(keyw, options = {})

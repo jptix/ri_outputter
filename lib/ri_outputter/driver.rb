@@ -16,7 +16,10 @@ module RiOutputter
     end
     
     def lookup(query)
-      get_info_for(query)
+      begin
+        get_info_for(query)
+      rescue RiError
+      end
     end
   end
 end
