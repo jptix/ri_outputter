@@ -8,6 +8,7 @@ module RiOutputter
     #
     #  * :template_folder => a folder that contains class.erb, method.erb and multiple_matches.erb
     #  * :formatter       => a formatter class 
+    #  * :driver          => a driver class
     def initialize(options = {})
       @template_folder = options[:template_folder]
       @formatter       = (options[:formatter] || HtmlFormatter).new(self)
@@ -39,6 +40,8 @@ module RiOutputter
         when RI::MethodEntry, RI::MethodDescription
           @formatter.markup_for_method_entries(result)
         end
+      else
+        # @formatter.markup_for_not_found(query) ??
       end
     end
     

@@ -29,20 +29,7 @@ module RiOutputter
       
       method_name        = method.full_name
       method_parameters  = method.params
-      if method.comment
-        method_example     = method.comment.select { |c| SM::Flow::VERB === c }
-        method_description = (method.comment - method_example)
-
-        method_description = method_description.map do |c|
-          c.respond_to?(:body) ? c.body.gsub(/^  .*\n(^  .*\n|^$\n(?=  |$))*/, '<pre>\0</pre>') : ''
-        end.join("\n")
-      
-        method_example = method_example.map do |c|
-          c.respond_to?(:body) ? c.body.gsub(/^  .*\n(^  .*\n|^$\n(?=  |$))*/, '<pre>\0</pre>') : ''
-        end.join("\n")
-      else
-        method_comment = method_example = ''
-      end
+      method_description = method.comment ? flow_to_html(method.comment) : ''
       
       method_aliases = method.aliases
       ERB.new(@method_template, 0, "%-<>").result(binding)
@@ -55,17 +42,7 @@ module RiOutputter
       @class_template ||= File.read @template_paths[:class]
       
       class_name = klass.full_name
-      if klass.comment
-        class_description = klass.comment.map do |c|
-          if c.respond_to?(:body) 
-            c.body.gsub(/^  .*\n(^  .*\n|^$\n(?=  |$))*/, '<pre>\0</pre>')
-          else
-            ''
-          end
-        end.join("\n").strip
-      else
-        class_description = ''
-      end
+      class_description = klass.comment ? flow_to_html(klass.comment) : ''
       
       if klass.includes
         class_includes = klass.includes.map do |mixin|
@@ -101,6 +78,18 @@ module RiOutputter
       @multiple_matches_template ||= File.read @template_paths[:multiple_matches] 
       objects = class_entries
       ERB.new(@multiple_matches_template, 0, "%-<>").result(binding)
+    end
+    
+    private
+    
+    def flow_to_html(comments)
+      comments.map do |c|
+        if c.respond_to?(:body) 
+          c.body.gsub(/^  .*\n(^  .*\n|^$\n(?=  |$))*/, '<pre>\0</pre>')
+        else
+          ''
+        end
+      end.join("\n").strip
     end
     
     def link(text)

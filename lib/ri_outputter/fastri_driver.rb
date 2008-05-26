@@ -1,5 +1,3 @@
-require "ruby-debug"
-
 module RiOutputter
   class FastRiDriver < FastRI::RiService
     include Display
