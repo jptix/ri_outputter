@@ -70,7 +70,7 @@ module RiOutputter
       if klass.includes
         class_includes = klass.includes.map do |mixin|
           name           = mixin.name
-          included_class = @ri.get_info_for(name)
+          included_class = @ri.struct_for(name)
           methods        = included_class ? included_class.instance_methods : []
           Mixin.new(name, methods)
         end
