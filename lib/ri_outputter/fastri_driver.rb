@@ -10,7 +10,13 @@ module RiOutputter
     include Display
         
     def initialize(options = {})
-      super(FastRI::RiIndex.new_from_paths(RI::Paths::PATH))
+      if File.exist?(index_file = File.expand_path("~/.fastri-index"))
+        index = File.open(index_file, "rb") { |io| Marshal.load io } 
+      else
+        index = FastRI::RiIndex.new_from_paths(RI::Paths::PATH)
+      end
+      
+      super(index)
     end
     
     def display(arg)
@@ -22,20 +28,16 @@ module RiOutputter
     end
 
     def lookup(query)
-      res = info(query)
+      info(query)
     end
     
-    def info(keyw, options = {})
-      options = DEFAULT_INFO_OPTIONS.merge(options)
+    def info(keyw)
       return nil if keyw.strip.empty?
-      descriptor = NameDescriptor.new(keyw)
-      entries = obtain_entries(descriptor, options)
-      
       begin
-        case entries.size
+        case (entries = obtain_entries(NameDescriptor.new(keyw), DEFAULT_INFO_OPTIONS)).size
         when 0; nil
         when 1
-          case entries.first.type
+          case entries[0].type
           when :namespace
               @ri_reader.get_class(entries[0])
           when :method

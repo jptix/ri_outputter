@@ -13,7 +13,7 @@ describe RiOutputter::Lookup do
       result = @ri.html_for("Array#sort")
       result.should include('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"')
     end
-
+      
     # =========
     # = Class =
     # =========
@@ -41,9 +41,7 @@ describe RiOutputter::Lookup do
       result = @ri.html_for("RDoc")
       result.should include('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"')
     end
-
-
-
+      
     # =====================
     # = Incomplete method =
     # =====================
@@ -51,7 +49,7 @@ describe RiOutputter::Lookup do
       result = @ri.html_for("sor")
       result.should include('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"')
     end
-
+      
     # =====================
     # = Incomplete class  =
     # =====================
