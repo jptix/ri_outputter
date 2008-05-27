@@ -15,9 +15,9 @@ module RiOutputter
 
       begin
         require File.dirname(__FILE__) + "/fastri_driver"
-        @driver = FastRiDriver.new
+        @driver = FastRiDriver.new(options)
       rescue LoadError
-        @driver = Driver.new
+        @driver = Driver.new(options)
       end
       
     end
