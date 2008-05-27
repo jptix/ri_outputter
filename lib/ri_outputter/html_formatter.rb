@@ -5,7 +5,20 @@ require 'rdoc/markup/simple_markup/to_html'
 
 module RiOutputter
   class HtmlFormatter
-
+    
+    LIST_TYPE_TO_HTML = {
+      :BULLET     => [  "<ul>",    "</ul>"    ],
+      :NUMBER     => [  "<ol>",    "</ol>"    ],
+      :UPPERALPHA => [  "<ol>",    "</ol>"    ],
+      :LOWERALPHA => [  "<ol>",    "</ol>"    ],
+      :LABELED    => [  "<dl>",    "</dl>"    ],
+      :NOTE       => [  "<table>", "</table>" ],
+    }
+    
+    LIST_ITEM_TO_HTML = {
+      
+    }
+    
     Mixin = Struct.new(:name, :methods)
 
     def initialize(ri)
@@ -87,6 +100,10 @@ module RiOutputter
     end
     
     private
+
+    def method_params_to_html(text, method_name)
+      "<pre>#{text}</pre>"
+    end
     
     def flow_to_html(flows)      
       out = []
@@ -94,10 +111,8 @@ module RiOutputter
         case flow
         when SM::Flow::P
           out << "<p>#{flow.body}</p>"
-          # out << @sm.convert(flow.body, @to_html)
         when SM::Flow::VERB
           out << "<pre>#{flow.body}</pre>"
-          # out << @sm.convert(flow.body, @to_html)
         when SM::Flow::RULE
           out << '<hr>'
         when SM::Flow::LIST
@@ -105,44 +120,53 @@ module RiOutputter
         when SM::Flow::H
           out << "<h#{flow.level}>#{flow.text}</h#{flow.level}>"
         else 
-          raise "Unknown element #{flow.inspect}"
+          raise "Unknown flow element #{flow.inspect}"
         end
       end
-
       out.join("\n")
     end
     
     def flow_list_to_html(list)
       out = []
-      out << "<dl>"
-      list.contents.each do |li|
-        case li
+      tags = LIST_TYPE_TO_HTML[list.type] || raise("Unknown list type: #{list.inspect}") 
+      
+      out << tags.first
+      list.contents.each do |element|
+        case element
         when SM::Flow::LI
-          out << <<-HTML
-            <dt>#{ li.label }</dt>
-            <dd>#{ li.body  }</dd>
-          HTML
+          out << list_item_to_html(element, list.type)
         when SM::Flow::LIST
-          out << flow_list_to_html(li)
+          out << flow_list_to_html(element)
         else
-          out << flow_to_html([li]).chomp
+          out << flow_to_html([element]).chomp
         end
       end
-      out << "</dl>"
+      out << tags.last
     end
     
-    def method_params_to_html(text, method_name)
-      # params = text.split("\n")
-      # params.map! do |param|
-      #   p param
-      #   if param =~ /^  .*\n/ #(^  .*\n|^$\n(?=  |$))*/
-      #     param
-      #   else
-      #     "  #{method_name}.#{param}"
-      #   end
-      # end
-      # "<pre>#{params.join("\n")}</pre>"
-      "<pre>#{text}</pre>"
+    def list_item_to_html(item, type)
+      case type
+      when :BULLET, :NUMBER
+        "<li>#{item.body}</li>"
+      when :UPPERALPHA
+        "<li type=\"A\">#{item.label} #{item.body}</li>"
+      when :LOWERALPHA
+        "<li type=\"a\">#{item.label} #{item.body}</li>"
+      when :LABELED
+        <<-HTML
+        <dt>#{ item.label }</dt>
+        <dd>#{ item.body}</dd>
+        HTML
+      when :NOTE
+        <<-HTML
+        <tr>
+          <th align="left">#{ item.label }</th>
+          <td valign="top">#{ item.body  }</td>
+        </tr>
+        HTML
+      else 
+        raise "Unknown list type #{type.inspect} for #{item.inspect}"
+      end
     end
     
     def link(text)
