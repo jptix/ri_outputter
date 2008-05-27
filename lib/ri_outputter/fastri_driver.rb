@@ -9,19 +9,22 @@ module RiOutputter
   class FastRiDriver < FastRI::RiService
     include Display
         
+    DEFAULT_OPTIONS = {
+      :lookup_order => [
+        :exact, :exact_ci, :nested, :nested_ci, :partial, :partial_ci, 
+        :nested_partial, :nested_partial_ci,
+        ]
+    }    
+    
     def initialize(options = {})
+      @options = DEFAULT_OPTIONS.merge(options)
+      
       if File.exist?(index_file = File.expand_path("~/.fastri-index"))
         index = File.open(index_file, "rb") { |io| Marshal.load io } 
       else
         index = FastRI::RiIndex.new_from_paths(RI::Paths::PATH)
       end
       
-      @obtain_entries_options = {
-        :lookup_order => [
-          :exact, :exact_ci, :nested, :nested_ci, :partial, :partial_ci, 
-          :nested_partial, :nested_partial_ci,
-          ]
-      }
       super(index)
     end
     
@@ -40,7 +43,7 @@ module RiOutputter
     def info(keyw)
       return nil if keyw.strip.empty?
       begin
-        case (entries = obtain_entries(NameDescriptor.new(keyw), @obtain_entries_options)).size
+        case (entries = obtain_entries(NameDescriptor.new(keyw), @options)).size
         when 0; nil
         when 1
           case entries[0].type

@@ -7,7 +7,7 @@ require File.dirname(__FILE__) + "/../lib/ri_outputter/fastri_driver"
 ri = RiOutputter::Driver.new
 fast_ri = RiOutputter::FastRiDriver.new
 
-TESTS = 10
+TESTS = 1
 Benchmark.bmbm do |results|
   results.report("ri     - Array#sort") do 
     TESTS.times { ri.lookup("Array#sort")}
