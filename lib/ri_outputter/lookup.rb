@@ -14,8 +14,6 @@ module RiOutputter
       @formatter       = (options[:formatter] || HtmlFormatter).new(self)
 
       begin
-        require "rubygems"
-        require 'fastri/ri_service'
         require File.dirname(__FILE__) + "/fastri_driver"
         @driver = FastRiDriver.new
       rescue LoadError

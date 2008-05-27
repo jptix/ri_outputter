@@ -15,10 +15,6 @@ module RiOutputter
       :NOTE       => [  "<table>", "</table>" ],
     }
     
-    LIST_ITEM_TO_HTML = {
-      
-    }
-    
     Mixin = Struct.new(:name, :methods)
 
     def initialize(ri)

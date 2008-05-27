@@ -1,3 +1,10 @@
+begin
+  require "rubygems"
+rescue LoadError
+end
+
+require 'fastri/ri_service'
+
 module RiOutputter
   class FastRiDriver < FastRI::RiService
     include Display
@@ -41,7 +48,6 @@ module RiOutputter
           end
         end
       rescue RiError
-        return nil
       end
     end
     
