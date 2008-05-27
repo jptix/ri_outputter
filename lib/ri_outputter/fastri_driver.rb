@@ -16,6 +16,12 @@ module RiOutputter
         index = FastRI::RiIndex.new_from_paths(RI::Paths::PATH)
       end
       
+      @obtain_entries_options = {
+        :lookup_order => [
+          :exact, :exact_ci, :nested, :nested_ci, :partial, :partial_ci, 
+          :nested_partial, :nested_partial_ci,
+          ]
+      }
       super(index)
     end
     
@@ -34,7 +40,7 @@ module RiOutputter
     def info(keyw)
       return nil if keyw.strip.empty?
       begin
-        case (entries = obtain_entries(NameDescriptor.new(keyw), DEFAULT_INFO_OPTIONS)).size
+        case (entries = obtain_entries(NameDescriptor.new(keyw), @obtain_entries_options)).size
         when 0; nil
         when 1
           case entries[0].type
